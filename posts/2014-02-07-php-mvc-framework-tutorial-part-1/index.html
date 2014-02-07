@@ -1,0 +1,247 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+
+
+    <title>gosukiwi's blog - Creating a PHP MVC framework - Part 1</title>
+
+
+<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.4.1/base-min.css">
+<link rel="stylesheet" href="/style.css">
+
+</head>
+<body>
+<div id="container">
+    <header>
+        <h1><a href="/">gosukiwi blog</a></h1>
+
+        <div class="links">
+            <ul>
+                <li><a href="/about">about</a></li>
+                <li><a href="mailto:fedra.arg@gmail.com">contact</a></li>
+                <li><a href="/archive">Archive</a></li>
+            </ul>
+        </div>
+
+    </header>
+
+    <div id="content">
+        Understanding MVC and why frameworks solve problems the way they do is sometimes hard, 
+and even more if you never really had those problems in the first place!
+
+I'm a pretty stubborn person, I like learning by myself, so most of the time I end up 
+looking for those problems, and finding solutions by myself, which enables me to think
+understand why and how frameworks such as Symfony or CodeIgniter solve those problems.
+
+The whole purpose of these tutorials is face those problems and find solutions, the
+beautiful part is that by the end of the series you will not only understand the basic
+of web MVC, but also the most common problems, and have your preferred solutions.
+
+<!-- more -->
+
+# About Me
+I'm [Federico Ramirez](http://gosukiwi.github.com/portfolio), a web developer from Argentina, with passion for Open Source and good practices, and I'll do my best to
+share my understanding of these technologies in an easy and pragmatic way.
+
+# Getting Started
+Before we continue, I'll assume the following:
+ * You have PHP 5.3+ installed (I'll test everything on PHP 5.5 though!)
+ * You have a web server such as Apache or Nginx running and configured
+ * You have a preferred IDE or Editor, already configured for PHP development
+ * You know the basics about PHP and Object Oriented Programming
+
+Those are pretty generic requirements, pretty much every web developer satisfies them,
+if you don't, [here's a good read](http://www.phptherightway.com/), you can come back
+whenever you are ready, I'll be here, promise!
+
+## MVC History
+
+With the basics covered, let's now talk a bit about **MVC**, which stands for 
+Model-View-Controller, it's a software pattern for developing user interfaces, and
+believe it or not it's from the 70's! It gained massive popularity when it moved from the
+desktop to the web, with Rails beeing one of the first and most popular frameworks to
+use that pattern and adapt it to web development.
+
+MVC divides your application in three layers, which somehow communicate with each other.
+
+All in all it's just a way of thinking and organizing your code, **you don't need a 
+framework** to think in an MVC way, nevertheless a framework forces you to do it, and
+when many people need to colaborate on a project, having a normalized way of solving
+problems is really helpful. Another advantage is it's easier to mantain, if you see
+a bunch of code you wrote 1 year ago, without using a framework or a design pattern,
+it can give you quite a headache to try and modify just a little detail!
+
+The advantages of MVC are several, but have in mind it's not the only design pattern
+out there! There are in fact a lot! Like MVP or MVVM, so it's not likely that MVC is the
+ultimate design pattern for the web, but it makes a lot of sense in most use cases,
+if you don't know which one to use, MVC is a good start for sure!
+
+## Model View and Controller
+So far I've talked quite a lot about MVC but never really get into much detail! 
+Before we start, I'd like to say I'll try to simplify as much as possible and give
+short examples, as to not fall into an abstract and hard to digest description.
+
+The M in MVC, stands for **Model**, in theory it's your data, in practice, the
+model "talks" with the database (most of the time MySQL), so it's fair to say that
+the Model is the link between your application and the database.
+
+You see MVC (and software design patterns in general) is all about separation of
+concern, working on smaller independant modules is easier and more mantainable than
+doing everything in the same place (spaghetti code).
+
+Are you getting a database error? Retrieving something you are not supposed to? Can't
+insert to the database? The problem is in the Model layer! It might not seem much but 
+knowing where the problem helps **a lot**.
+
+The **View** is what the user sees, in this case, an HTML page, which our application
+reads and displays as needed.
+
+This is pretty useful to let a designer work on the pages while the developers work
+on the functionality, even if the functionality is not there yet, the designer can already work on the views!
+
+Finally the **Controller** is in charge of binding the Model and the View together, for example, you need to display a list of the latest 10 products, it would look something like this
+
+    // somewhere inside a controller...
+    $model = $this->get('products_model');
+    $products = $model->getLatest(10);
+    return $this->view('myView.html', array('products' => $products));
+
+The controller loads the according model, get's the required data, and the view 
+is in charge of showing it.
+
+We start to get a taste of the separation of concern, and it's for that very reason 
+that the controller should only manipulate data, but it should not specify how
+it's displayed, that's the view's concern!
+
+Also, the controller doesn't care how the model got the data, or whether it used
+MySQL, SQLite or a web service, it just knows that ```getLatest``` returns the latest
+products.
+
+## Thinking in MVC
+It's important to think the MVC way, don't worry, it's actually pretty easy, to emphasize
+this concept let me show you an example of what could have been standard PHP code some
+years ago, and let's transform it to MVC (no framework needed!)
+
+    <?php
+    // file: ./app/entries.php
+
+    include('config.php'); // this file opens a connection to a mysql server
+    include('header.php'); // this file is a bunch of html with embedded PHP
+
+    // retrieve all entries
+    $query = mysql_query('SELECT * FROM `entries`);
+    while($row = mysql_fetch_assoc($query)) {
+        echo '<p><a href="/entry.php?id=' . $row['id'] . '">' . $row['name'] . '</a></p>';
+    }
+
+    include('footer.php'); // this file is a bunch of html too!
+
+The code above might seem easy to read and understand, but it mixes everything onto
+one file! What if a designer wants to update the way the entries are shown? Unless he knows PHP and is familiar with the project it's going to be impossible.
+Another problem is, what if we change the table name from ```entries``` to ```my_entries```, probably we'll need to update a bunch of ```.php``` files with the new query.
+
+One of the most important points though, is that the code above can't be easily tested,
+MVC and TDD play really well together, and they lead to mantainable and stable software.
+
+In case you wonder what TDD is 
+[Test Driven Development](http://en.wikipedia.org/wiki/Test-driven_development), 
+I won't cover TDD in these tutorials but it's worth mentioning it should be used in
+pretty much every software project which will need maintenance and stability.
+
+In MVC you can test the Model, the View and the Controller in different and
+contained tests, so you can be sure you'll never break anything if you modify
+old code and the test pass :)
+
+TDD of course has a lot more benefits, it's worth taking some time and implement it
+in your projects.
+
+Enough chit-chat though! Let's MVCify that code! 
+
+    // file: ./app/controllers/entries_controller.php
+    class EntriesController extends BaseController
+    {
+        public function index() {
+            $model = $this->get('entries_model');
+            $entries = $model->getLatest();
+            return $this->view('entries/index.html', array('entries' => $entries));
+        }
+    }
+
+    // file: ./app/models/entries_model.php
+    class EntriesModel extends BaseModel
+    {
+        public function getLatest() {
+            return $this->query('SELECT * FROM `entries`);
+        }
+    }
+
+    // file: ./app/views/entries/index.html.php
+    <h1>Listing all entries</h1>
+    <?php foreach ($entries as $entry): ?>
+        <a href="/delete/<?php echo $entry['id']; ?>"><?php echo $entry['name'] ?></a>
+    <?php endforeach; ?>
+
+Okay so we split that file onto 3, solving all the problems I said before! 
+First of all, let's look at the controller, it's just a class which extends from 
+```BaseController```, this is just a class with some shared
+methods to not repeat yourself with all controllers, it can have methods such as
+```get``` which returns an specified model in this case, and ```view``` which
+includes and displays a ```.php``` file with a given context.
+
+The model is also a class which extends from BaseModel, and as with the controller,
+BaseModel eliminates repetition and eases the creation of several models, it also
+does some of the work ```include('config.php')``` did in the old script. 
+
+Finally the view is just a plain HTML file with some embedded PHP, it's important to
+note that the PHP code is used only to display the data sent by the controller as
+desired. Using plain PHP might simple for us but it's not easy for a designer to work with it, and it gives too much power, which can lead to developers adding too much 
+logic in the view, instead of where it should be. Templates exist for this reason,
+we can just choose a library and use it, with [Twig](http://twig.sensiolabs.org/) 
+beeing one of the most popular and supported out there, [Lexy](https://github.com/aheinze/cockpit/blob/master/vendor/Lexy.php) is also a nice 
+alternative.
+
+The previous view in Twig would look something like this
+
+    <h1>Listing all entries</h1>
+    {% for entry in entries %}
+        <a href="/delete/{{ entry.id }}">{{ entry.name }}</a>
+    {% endfor %}
+
+Much more friendly! And it eliminates possible ugly hacks that should be avoided.
+
+Note that the logic of each of these components is really simple, each layer has one 
+responsibility, making it easier to develop!
+
+Ok, so all the components are created, now what? What binds them together? Well
+if you had a framework that would just magically work, nevertheless, for now, we can 
+just instantiate all classes manually
+
+    //file: ./index.php
+
+    include('app/controllers/entries_controller.php');
+
+    $controller = new EntriesController();
+    $controller->index();
+
+Of course, the example won't work if you copy and paste the given code
+as we didn't create the base clases, you can consider it pseudo-code.
+
+In the following tutorial we'll get our hands dirty and actually write code
+which actually run!
+
+# Conclusion
+In this first part we saw what MVC is, and some problems it solves, we learnt that
+testing is good, also we saw some alternative solutions for displaying views, such as
+Twig and Lexy.
+
+I really hope I made myself clear and I'm open to suggestions, just hit me up at 
+fedra.arg@gmail.com.
+    </div>
+
+    <footer>
+        <div class="attribution">gosukiwi - Federico Ramirez</div>
+    </footer>
+</div>
+</body>
+</html>
