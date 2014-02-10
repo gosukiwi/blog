@@ -2,6 +2,12 @@
 * {
   font-family: 'Oxygen', sans-serif; }
 
+pre.prettyprint {
+  border: none !important; }
+  pre.prettyprint span {
+    font-family: "Lucida Console", Monaco, monospace;
+    font-size: 13px; }
+
 header,
 footer,
 div#content {
