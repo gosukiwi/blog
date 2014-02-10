@@ -63,6 +63,8 @@ mind it’s not as easy as it seems! </p>
 
 <p>Now with that in mind, let’s start our framework :) </p>
 
+<!-- more -->
+
 <h1 id="directory-structure">Directory Structure</h1>
 <p>Let’s start off by defining our directory structure, because PHP uses <a href="https://getcomposer.org/">composer</a>
 for dependency management, we’ll create a <code>vendor/</code> folder, all of composer’s
@@ -268,6 +270,12 @@ index.php
 the web MVC design pattern</p>
 
 <p><img src="/blog/assets/img/mvc-flowchart.png" alt="Flow chart" /></p>
+
+<p>As you can see, the first thing the app does when it gets a request from
+the browser is call index.php, this file sets up the according controller
+and calls the required action, then the controller uses the model (this step is optional),
+and finally returns a view, which is what the browser gets as response (this is also 
+optional as redirection is handled by the controller).</p>
 
 <p>If you have any error with your code or just want to download the full source code, 
 you can check the git repository at <a href="https://github.com/gosukiwi/php-mvc-tutorial">GitHub</a>. 
