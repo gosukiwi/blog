@@ -38,8 +38,26 @@
 we’ll dig deeper onto MVC, in this part we’ll work on the “M” part of MVC, 
 that’s the model!</p>
 
-<p>Most of MVC frameworks come with a nice ORM we can use to abstract the database
-from us, taking us one level higher by using
+<p>As BackBone fundamentals <a href="http://addyosmani.github.io/backbone-fundamentals/#mvc">describes</a> 
+“The Model represent domain-specific knowledge and data in an application 
+(bussiness data). Think of this as being a type of data you can model — like a 
+User, Photo, or Todo note.”, it is in fact describing the classic MVC, but
+it applies to web MVC.</p>
+
+<p>It’s important to note that the original implementation of MVC is not the
+one you see on the web today, it has changed so much in fact it’s actually
+called <a href="http://en.wikipedia.org/wiki/Model2">Model 2</a>, nevertheless if you
+ask developers what type of framework Rails (or any other popular Model 2 
+framework) is, they will most likely answer “an MVC framework”.</p>
+
+<p>It changed because the HTTP protocol is stateles, every request creates a new
+communication channel between the application and the user, there isn’t a 
+constant connection, as in the desktop world, so the classic MVC had to be
+modified to work in this context.</p>
+
+<p>Back to web MVC, most of MVC frameworks come with a nice ORM or API we can use 
+to abstract the database from us, which enables us to easily represent the
+bussiness data in our application, taking us one level higher by using
 <a href="http://en.wikipedia.org/wiki/Abstraction">abstraction</a>, remember how C is a low
 level programming language and dynamic languages such as PHP are higher level? 
 Frameworks provide an even higher level by using several abstractions. </p>
